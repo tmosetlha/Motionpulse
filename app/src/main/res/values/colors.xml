@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Background -->
+    <color name="mp_background">#000000</color>
+    <color name="mp_surface">#1D0B24</color>
+
+    <!-- Brand gradient (pink -> purple -> blue), sampled from actual screens -->
+    <color name="mp_pink">#E8348A</color>
+    <color name="mp_purple">#B03CB0</color>
+    <color name="mp_blue">#66B8DE</color>
+
+    <!-- Text -->
+    <color name="mp_text_primary">#FFFFFF</color>
+    <color name="mp_text_secondary">#B8A9C9</color>
+
+    <!-- Card / border -->
+    <color name="mp_card_border">#E8348A</color>
+
+    <!-- Status -->
+    <color name="mp_error">#8B1E3A</color>
+    <color name="mp_success">#2ECC71</color>
 </resources>

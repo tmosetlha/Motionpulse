@@ -1,8 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Motionpulse" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.Motionpulse" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/mp_purple</item>
+        <item name="colorPrimaryVariant">@color/mp_pink</item>
+        <item name="colorOnPrimary">@color/mp_text_primary</item>
+
+        <item name="colorSecondary">@color/mp_blue</item>
+        <item name="colorOnSecondary">@color/mp_text_primary</item>
+
+        <item name="android:windowBackground">@color/mp_background</item>
+        <item name="android:statusBarColor">@color/mp_background</item>
+        <item name="android:navigationBarColor">@color/mp_background</item>
+
+        <item name="android:textColorPrimary">@color/mp_text_primary</item>
+        <item name="android:textColorSecondary">@color/mp_text_secondary</item>
     </style>
 
     <style name="Theme.Motionpulse" parent="Base.Theme.Motionpulse" />
