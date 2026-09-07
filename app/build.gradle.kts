@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
 }
@@ -32,7 +31,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
     buildFeatures {
         viewBinding = true
     }
@@ -54,6 +52,11 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
+
+    // Google Sign-In (Credential Manager - current recommended approach)
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
