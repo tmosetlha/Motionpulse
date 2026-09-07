@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
 
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 android {
