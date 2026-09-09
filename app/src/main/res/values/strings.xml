@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Motionpulse</string>
+    <string name="app_name">MOTION.PULSE</string>
     <string name="app_name_wordmark">MOTION.PULSE</string>
+
+    <string name="tagline_login">Build your rhythm.</string>
+    <string name="hint_email">Email Address</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_log_in">Log In</string>
+    <string name="link_forgot_password">Forgot Password?</string>
+    <string name="label_or">or</string>
+    <string name="btn_continue_google">Continue with Google</string>
+    <string name="btn_continue_yahoo">Continue with Yahoo</string>
+    <string name="prompt_new_here">New Here? </string>
+    <string name="link_create_account">Create an Account</string>
 </resources>
