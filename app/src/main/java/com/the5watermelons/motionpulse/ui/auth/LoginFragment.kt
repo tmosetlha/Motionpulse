@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -19,6 +18,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.OAuthProvider
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.databinding.FragmentLoginBinding
+import com.the5watermelons.motionpulse.util.MessageUtils
+import com.the5watermelons.motionpulse.util.enablePasswordToggle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
@@ -41,6 +43,8 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
 
+        binding.etPassword.enablePasswordToggle()
+
         binding.btnLogin.setOnClickListener { signInWithEmail() }
         binding.btnGoogle.setOnClickListener { signInWithGoogle() }
         binding.btnYahoo.setOnClickListener { signInWithYahoo() }
@@ -57,16 +61,16 @@ class LoginFragment : Fragment() {
         val password = binding.etPassword.text.toString().trim()
 
         if (email.isEmpty() || password.isEmpty()) {
-            toast("Please enter your email and password")
+            showError("Please enter your email and password")
             return
         }
 
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
-                    goToHome()
+                    onLoginSuccess()
                 } else {
-                    toast(task.exception?.message ?: "Login failed")
+                    showError(task.exception?.message ?: "Login failed")
                 }
             }
     }
@@ -74,15 +78,16 @@ class LoginFragment : Fragment() {
     private fun sendPasswordReset() {
         val email = binding.etEmail.text.toString().trim()
         if (email.isEmpty()) {
-            toast("Enter your email above first")
+            showError("Enter your email above first")
             return
         }
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
-                toast(
-                    if (task.isSuccessful) "Password reset email sent"
-                    else "Couldn't send reset email: ${task.exception?.message}"
-                )
+                if (task.isSuccessful) {
+                    MessageUtils.showSuccess(binding.root, "Password reset email sent")
+                } else {
+                    showError("Couldn't send reset email: ${task.exception?.message}")
+                }
             }
     }
 
@@ -114,14 +119,14 @@ class LoginFragment : Fragment() {
                     )
                     auth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener(requireActivity()) { task ->
-                            if (task.isSuccessful) goToHome()
-                            else toast(task.exception?.message ?: "Google sign-in failed")
+                            if (task.isSuccessful) onLoginSuccess()
+                            else showError(task.exception?.message ?: "Google sign-in failed")
                         }
                 } else {
-                    toast("Unexpected credential type from Google")
+                    showError("Unexpected credential type from Google")
                 }
             } catch (e: GetCredentialException) {
-                toast(e.message ?: "Google sign-in was cancelled or failed")
+                showError(e.message ?: "Google sign-in was cancelled or failed")
             }
         }
     }
@@ -132,27 +137,32 @@ class LoginFragment : Fragment() {
         val pending = auth.pendingAuthResult
         if (pending != null) {
             pending
-                .addOnSuccessListener { goToHome() }
-                .addOnFailureListener { toast(it.message ?: "Yahoo sign-in failed") }
+                .addOnSuccessListener { onLoginSuccess() }
+                .addOnFailureListener { showError(it.message ?: "Yahoo sign-in failed") }
             return
         }
 
         val provider = OAuthProvider.newBuilder("yahoo.com")
         auth.startActivityForSignInWithProvider(requireActivity(), provider.build())
-            .addOnSuccessListener { goToHome() }
-            .addOnFailureListener { toast(it.message ?: "Yahoo sign-in failed") }
+            .addOnSuccessListener { onLoginSuccess() }
+            .addOnFailureListener { showError(it.message ?: "Yahoo sign-in failed") }
     }
 
     // ---------- Helpers ----------
 
-    private fun goToHome() {
-        if (isAdded) {
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+    private fun onLoginSuccess() {
+        if (!isAdded) return
+        MessageUtils.showSuccess(binding.root, "Welcome back!")
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(1000)
+            if (isAdded) {
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            }
         }
     }
 
-    private fun toast(message: String) {
-        if (isAdded) Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    private fun showError(message: String) {
+        if (isAdded) MessageUtils.showError(binding.root, message)
     }
 
     override fun onDestroyView() {

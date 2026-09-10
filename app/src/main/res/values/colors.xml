@@ -17,6 +17,7 @@
     <color name="mp_card_border">#E8348A</color>
 
     <!-- Status -->
-    <color name="mp_error">#8B1E3A</color>
+    <color name="mp_error">#E5484D</color>
+    <color name="mp_warning">#F2C230</color>
     <color name="mp_success">#2ECC71</color>
 </resources>
