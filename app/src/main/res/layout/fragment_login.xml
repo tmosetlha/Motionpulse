@@ -87,17 +87,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/etEmail" />
 
-        <Button
+        <!--
+            Fully-qualified tag <android.widget.Button> (not <Button>) is required here.
+            Android's theme auto-substitutes any plain <Button> tag with MaterialButton,
+            which discards android:background entirely and manages its own shape/color
+            internally - no style attribute can stop that substitution. Using the
+            fully-qualified class name is the only reliable way to get the real platform
+            Button, which respects android:background exactly, so the actual
+            pink->purple->blue gradient renders untouched.
+        -->
+        <android.widget.Button
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="54dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/gradient_button"
+            android:elevation="6dp"
             android:text="@string/btn_log_in"
             android:textAllCaps="false"
             android:textColor="@color/mp_text_primary"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,35 +138,73 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvForgotPassword" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/btnGoogle"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="52dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/outline_button_background"
-            android:text="@string/btn_continue_google"
-            android:textAllCaps="false"
-            android:textColor="@color/mp_text_primary"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvOr" />
+            app:layout_constraintTop_toBottomOf="@id/tvOr">
 
-        <Button
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/btn_continue_google"
+                android:src="@drawable/ic_google" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/btn_continue_google"
+                android:textColor="@color/mp_text_primary"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btnYahoo"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="52dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:background="@drawable/outline_button_background"
-            android:text="@string/btn_continue_yahoo"
-            android:textAllCaps="false"
-            android:textColor="@color/mp_text_primary"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnGoogle" />
+            app:layout_constraintTop_toBottomOf="@id/btnGoogle">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/btn_continue_yahoo"
+                android:src="@drawable/ic_yahoo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/btn_continue_yahoo"
+                android:textColor="@color/mp_text_primary"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

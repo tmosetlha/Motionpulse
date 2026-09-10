@@ -13,4 +13,11 @@
     <string name="btn_continue_yahoo">Continue with Yahoo</string>
     <string name="prompt_new_here">New Here? </string>
     <string name="link_create_account">Create an Account</string>
+
+    <string name="heading_create_account">Create an Account</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="btn_register">Register</string>
+    <string name="prompt_have_account">Have an Account? </string>
+    <string name="link_log_in">Log In</string>
 </resources>
