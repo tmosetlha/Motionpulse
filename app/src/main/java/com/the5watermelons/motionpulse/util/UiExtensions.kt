@@ -1,11 +1,16 @@
 package com.the5watermelons.motionpulse.util
 
+import android.app.Activity
+import android.graphics.Typeface
 import android.text.InputType
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.google.android.material.snackbar.Snackbar
 import com.the5watermelons.motionpulse.R
 
 /**
@@ -44,30 +49,60 @@ private fun EditText.updatePasswordToggleIcon(visible: Boolean) {
 }
 
 /**
- * Shows a Snackbar styled with the app's brand gradient (success) or error color,
- * instead of the default plain grey Material Snackbar.
+ * Shows a small branded message pinned to the bottom of the screen, built entirely
+ * by hand instead of using Material's Snackbar -- Snackbar re-applies its own
+ * elevation-tinted background during its show animation no matter what we set
+ * beforehand, which is why it kept rendering as a washed cream color instead of
+ * our exact brand colors. This bypasses that system completely.
  */
 object MessageUtils {
 
-    fun showSuccess(anchor: View, message: String) {
-        showBranded(anchor, message, R.drawable.snackbar_background_success)
+    fun showSuccess(activity: Activity, message: String) {
+        showBranded(activity, message, R.drawable.snackbar_background_success)
     }
 
-    fun showError(anchor: View, message: String) {
-        showBranded(anchor, message, R.drawable.snackbar_background_error)
+    fun showError(activity: Activity, message: String) {
+        showBranded(activity, message, R.drawable.snackbar_background_error)
     }
 
-    private fun showBranded(anchor: View, message: String, backgroundRes: Int) {
-        val snackbar = Snackbar.make(anchor, message, Snackbar.LENGTH_LONG)
-        val snackbarView = snackbar.view
-        snackbarView.background = ContextCompat.getDrawable(anchor.context, backgroundRes)
+    private fun showBranded(activity: Activity, message: String, backgroundRes: Int) {
+        val root = activity.findViewById<ViewGroup>(android.R.id.content)
+        val density = activity.resources.displayMetrics.density
 
-        val textView = snackbarView.findViewById<android.widget.TextView>(
-            com.google.android.material.R.id.snackbar_text
-        )
-        textView.setTextColor(ContextCompat.getColor(anchor.context, R.color.mp_text_primary))
-        textView.textSize = 15f
+        val messageView = TextView(activity).apply {
+            text = message
+            setTextColor(ContextCompat.getColor(activity, R.color.mp_text_primary))
+            textSize = 15f
+            setTypeface(typeface, Typeface.BOLD)
+            gravity = Gravity.CENTER
+            background = ContextCompat.getDrawable(activity, backgroundRes)
+            elevation = 12f * density
+            val paddingH = (18 * density).toInt()
+            val paddingV = (14 * density).toInt()
+            setPadding(paddingH, paddingV, paddingH, paddingV)
+            alpha = 0f
+        }
 
-        snackbar.show()
+        val sideMarginPx = (24 * density).toInt()
+        val bottomMarginPx = (90 * density).toInt()
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            leftMargin = sideMarginPx
+            rightMargin = sideMarginPx
+            bottomMargin = bottomMarginPx
+        }
+
+        root.addView(messageView, params)
+
+        messageView.animate().alpha(1f).setDuration(200).withEndAction {
+            messageView.postDelayed({
+                messageView.animate().alpha(0f).setDuration(200).withEndAction {
+                    root.removeView(messageView)
+                }.start()
+            }, 1800L)
+        }.start()
     }
 }

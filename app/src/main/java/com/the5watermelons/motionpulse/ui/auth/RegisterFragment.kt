@@ -43,13 +43,16 @@ class RegisterFragment : Fragment() {
         binding.etPassword.enablePasswordToggle()
         binding.etConfirmPassword.enablePasswordToggle()
 
-        binding.etPassword.addTextChangedListener(object : TextWatcher {
+        val watcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updatePasswordStrength(s?.toString().orEmpty())
+                updatePasswordStrength(binding.etPassword.text.toString())
+                updatePasswordMatch()
             }
             override fun afterTextChanged(s: Editable?) {}
-        })
+        }
+        binding.etPassword.addTextChangedListener(watcher)
+        binding.etConfirmPassword.addTextChangedListener(watcher)
 
         binding.btnRegister.setOnClickListener { registerUser() }
         binding.tvLogIn.setOnClickListener { findNavController().popBackStack() }
@@ -82,6 +85,30 @@ class RegisterFragment : Fragment() {
         binding.pbPasswordStrength.progressTintList = ColorStateList.valueOf(color)
         binding.tvPasswordStrength.text = label
         binding.tvPasswordStrength.setTextColor(color)
+    }
+
+    // ---------- Confirm-password match checker ----------
+
+    private fun updatePasswordMatch() {
+        val password = binding.etPassword.text.toString()
+        val confirm = binding.etConfirmPassword.text.toString()
+
+        if (confirm.isEmpty()) {
+            binding.tvPasswordMatch.text = ""
+            return
+        }
+
+        if (password == confirm) {
+            binding.tvPasswordMatch.text = "Passwords match"
+            binding.tvPasswordMatch.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.mp_success)
+            )
+        } else {
+            binding.tvPasswordMatch.text = "Passwords don't match"
+            binding.tvPasswordMatch.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.mp_error)
+            )
+        }
     }
 
     // ---------- Registration ----------
@@ -135,7 +162,7 @@ class RegisterFragment : Fragment() {
         // log in fresh with their new credentials rather than skip straight in.
         auth.signOut()
 
-        MessageUtils.showSuccess(binding.root, "Account created! Please log in.")
+        MessageUtils.showSuccess(requireActivity(), "Account created! Please log in.")
         viewLifecycleOwner.lifecycleScope.launch {
             delay(1200)
             if (isAdded) findNavController().popBackStack()
@@ -143,7 +170,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun showError(message: String) {
-        if (isAdded) MessageUtils.showError(binding.root, message)
+        if (isAdded) MessageUtils.showError(requireActivity(), message)
     }
 
     override fun onDestroyView() {

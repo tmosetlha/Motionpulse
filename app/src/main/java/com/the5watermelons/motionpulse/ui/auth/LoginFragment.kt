@@ -20,8 +20,10 @@ import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.databinding.FragmentLoginBinding
 import com.the5watermelons.motionpulse.util.MessageUtils
 import com.the5watermelons.motionpulse.util.enablePasswordToggle
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 class LoginFragment : Fragment() {
 
@@ -84,7 +86,7 @@ class LoginFragment : Fragment() {
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    MessageUtils.showSuccess(binding.root, "Password reset email sent")
+                    MessageUtils.showSuccess(requireActivity(), "Password reset email sent")
                 } else {
                     showError("Couldn't send reset email: ${task.exception?.message}")
                 }
@@ -94,6 +96,12 @@ class LoginFragment : Fragment() {
     // ---------- Google (Credential Manager) ----------
 
     private fun signInWithGoogle() {
+        // Immediate feedback so tapping the button is never silent -- if this toast
+        // doesn't appear, the tap itself isn't registering (a UI/click-wiring issue).
+        // If it appears but nothing follows, the hang is inside Credential Manager
+        // itself (almost always missing Play Services / no Play Store on this device).
+        android.widget.Toast.makeText(requireContext(), "Opening Google Sign-In...", android.widget.Toast.LENGTH_SHORT).show()
+
         val credentialManager = CredentialManager.create(requireContext())
 
         val googleIdOption = GetGoogleIdOption.Builder()
@@ -107,7 +115,9 @@ class LoginFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val result = credentialManager.getCredential(requireActivity(), request)
+                val result = withTimeout(8000L) {
+                    credentialManager.getCredential(requireActivity(), request)
+                }
                 val credential = result.credential
 
                 if (credential is CustomCredential &&
@@ -125,8 +135,15 @@ class LoginFragment : Fragment() {
                 } else {
                     showError("Unexpected credential type from Google")
                 }
+            } catch (e: TimeoutCancellationException) {
+                showError("Google Sign-In timed out. This usually means this device/emulator doesn't have Google Play Services or the Play Store app available.")
             } catch (e: GetCredentialException) {
-                showError(e.message ?: "Google sign-in was cancelled or failed")
+                // Surface the exact exception type (e.g. NoCredentialException usually
+                // means no Google account on device, or Play Services/Play Store missing
+                // on the emulator) so real failures are diagnosable instead of generic.
+                showError("Google sign-in failed [${e.javaClass.simpleName}]: ${e.message}")
+            } catch (e: Exception) {
+                showError("Google sign-in error [${e.javaClass.simpleName}]: ${e.message}")
             }
         }
     }
@@ -152,7 +169,7 @@ class LoginFragment : Fragment() {
 
     private fun onLoginSuccess() {
         if (!isAdded) return
-        MessageUtils.showSuccess(binding.root, "Welcome back!")
+        MessageUtils.showSuccess(requireActivity(), "Welcome back!")
         viewLifecycleOwner.lifecycleScope.launch {
             delay(1000)
             if (isAdded) {
@@ -162,7 +179,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun showError(message: String) {
-        if (isAdded) MessageUtils.showError(binding.root, message)
+        if (isAdded) MessageUtils.showError(requireActivity(), message)
     }
 
     override fun onDestroyView() {
