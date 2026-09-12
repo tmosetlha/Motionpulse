@@ -31,4 +31,16 @@
     <string name="label_todays_habits">Today\'s Habits</string>
     <string name="label_plus_badge">+ Badge</string>
     <string name="btn_log_out">Log Out</string>
+    <string name="label_no_habits_yet">No habits yet — tap + to add one</string>
+    <string name="label_add_habit">Add Habit</string>
+    <string name="label_categories">CATEGORIES</string>
+    <string name="category_mind_focus">Mind &amp; Focus</string>
+    <string name="category_fitness_health">Fitness &amp; Health</string>
+    <string name="category_daily_routine">Daily Routine</string>
+    <string name="label_name_of_habit">Name of the habit</string>
+    <string name="hint_habit_name_example">e.g Read a book for 10 minutes</string>
+    <string name="btn_add_habit">Add Habit</string>
+    <string name="confirm_delete_habit">Delete this habit? This can\'t be undone.</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

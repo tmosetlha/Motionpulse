@@ -15,7 +15,17 @@
         android:id="@+id/habitsFragment"
         android:name="com.the5watermelons.motionpulse.ui.habits.HabitsFragment"
         android:label="Habits"
-        tools:layout="@layout/fragment_habits" />
+        tools:layout="@layout/fragment_habits">
+        <action
+            android:id="@+id/action_habitsFragment_to_addHabitFragment"
+            app:destination="@id/addHabitFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addHabitFragment"
+        android:name="com.the5watermelons.motionpulse.ui.habits.AddHabitFragment"
+        android:label="Add Habit"
+        tools:layout="@layout/fragment_add_habit" />
 
     <fragment
         android:id="@+id/statsFragment"
