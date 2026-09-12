@@ -58,10 +58,11 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
-    // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    // Room -- 2.8.4 required: 2.6.1 hits a known KSP2 bug ('unexpected jvm
+    // signature V') on suspend DAO functions returning Unit. Fixed in 2.7.0+.
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
 
     // Retrofit (REST API calls)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
