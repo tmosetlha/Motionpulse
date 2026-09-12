@@ -20,4 +20,15 @@
     <string name="btn_register">Register</string>
     <string name="prompt_have_account">Have an Account? </string>
     <string name="link_log_in">Log In</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_habits">Habits</string>
+    <string name="nav_stats">Stats</string>
+    <string name="nav_profile">Profile</string>
+
+    <string name="placeholder_greeting">Welcome back!</string>
+    <string name="placeholder_day_count">Day 1 of your journey</string>
+    <string name="placeholder_motivation">Motivation of the day: Consistency is key</string>
+    <string name="label_todays_habits">Today\'s Habits</string>
+    <string name="label_plus_badge">+ Badge</string>
+    <string name="btn_log_out">Log Out</string>
 </resources>
