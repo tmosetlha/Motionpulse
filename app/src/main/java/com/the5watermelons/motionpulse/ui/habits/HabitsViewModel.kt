@@ -20,7 +20,8 @@ class HabitsViewModel(application: Application) : AndroidViewModel(application) 
     private val db = AppDatabase.getInstance(application)
     private val repository: HabitRepository = HabitRepository(
         db.habitDao(),
-        db.habitCompletionDao()
+        db.habitCompletionDao(),
+        application.applicationContext
     )
 
     val habits: StateFlow<List<HabitEntity>> = repository.observeHabits()

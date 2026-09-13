@@ -1,5 +1,6 @@
 package com.the5watermelons.motionpulse.data.repository
 
+import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.the5watermelons.motionpulse.data.local.HabitCompletionDao
@@ -21,6 +22,7 @@ import java.util.Locale
 class HabitRepository(
     private val habitDao: HabitDao,
     private val completionDao: HabitCompletionDao,
+    private val appContext: Context,
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
     private val currentUserId: String
@@ -82,7 +84,7 @@ class HabitRepository(
     }
 
     private suspend fun pushToFirestore(habit: HabitEntity) {
-        runCatching {
+        val result = runCatching {
             firestore.collection("users").document(currentUserId)
                 .collection("habits").document(habit.id)
                 .set(habit)
@@ -90,6 +92,11 @@ class HabitRepository(
             habitDao.update(habit.copy(syncStatus = true))
         }
         // Failure is expected when offline -- syncStatus simply stays false,
-        // and the record remains fully usable locally via Room.
+        // and the record remains fully usable locally via Room. Schedule a
+        // WorkManager retry so it pushes automatically once back online,
+        // instead of staying unsynced until the next manual write.
+        if (result.isFailure) {
+            com.the5watermelons.motionpulse.data.sync.SyncScheduler.scheduleImmediateRetry(appContext)
+        }
     }
 }

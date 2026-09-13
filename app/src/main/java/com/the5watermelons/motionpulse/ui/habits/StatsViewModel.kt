@@ -29,7 +29,7 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     )
 
     private val db = AppDatabase.getInstance(application)
-    private val repository = HabitRepository(db.habitDao(), db.habitCompletionDao())
+    private val repository = HabitRepository(db.habitDao(), db.habitCompletionDao(), application.applicationContext)
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     private val habits: StateFlow<List<HabitEntity>> = repository.observeHabits()

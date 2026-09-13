@@ -20,7 +20,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     )
 
     private val db = AppDatabase.getInstance(application)
-    private val repository = HabitRepository(db.habitDao(), db.habitCompletionDao())
+    private val repository = HabitRepository(db.habitDao(), db.habitCompletionDao(), application.applicationContext)
 
     val summary: StateFlow<ProfileSummary> = repository.observeHabits()
         .map { habits ->
