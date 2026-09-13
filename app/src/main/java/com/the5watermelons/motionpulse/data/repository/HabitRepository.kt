@@ -2,10 +2,14 @@ package com.the5watermelons.motionpulse.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.the5watermelons.motionpulse.data.local.HabitCompletionDao
+import com.the5watermelons.motionpulse.data.local.HabitCompletionEntity
 import com.the5watermelons.motionpulse.data.local.HabitDao
 import com.the5watermelons.motionpulse.data.local.HabitEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * Room is the single source of truth for the UI (offline-first). Firestore is
@@ -16,13 +20,25 @@ import kotlinx.coroutines.tasks.await
  */
 class HabitRepository(
     private val habitDao: HabitDao,
+    private val completionDao: HabitCompletionDao,
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) {
     private val currentUserId: String
         get() = FirebaseAuth.getInstance().currentUser?.uid ?: "anonymous"
 
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
     fun observeHabits(): Flow<List<HabitEntity>> =
         habitDao.getHabitsForUser(currentUserId)
+
+    fun observeCompletionsInRange(habitId: String, startDate: String, endDate: String): Flow<List<HabitCompletionEntity>> =
+        completionDao.observeForHabitInRange(habitId, startDate, endDate)
+
+    suspend fun totalCompletionsForHabit(habitId: String): Int =
+        completionDao.countForHabit(habitId)
+
+    suspend fun completedDatesInRange(habitId: String, startDate: String, endDate: String): List<String> =
+        completionDao.getCompletedDatesInRange(habitId, startDate, endDate)
 
     suspend fun addHabit(name: String, category: String) {
         val habit = HabitEntity(
@@ -36,6 +52,8 @@ class HabitRepository(
 
     suspend fun toggleComplete(habit: HabitEntity) {
         val nowDone = !habit.isDoneToday
+        val today = dateFormat.format(System.currentTimeMillis())
+
         val updated = habit.copy(
             isDoneToday = nowDone,
             streakCount = if (nowDone) habit.streakCount + 1 else maxOf(0, habit.streakCount - 1),
@@ -43,6 +61,13 @@ class HabitRepository(
             syncStatus = false
         )
         habitDao.update(updated)
+
+        if (nowDone) {
+            completionDao.insert(HabitCompletionEntity(habitId = habit.id, dateString = today))
+        } else {
+            completionDao.deleteForDate(habit.id, today)
+        }
+
         pushToFirestore(updated)
     }
 

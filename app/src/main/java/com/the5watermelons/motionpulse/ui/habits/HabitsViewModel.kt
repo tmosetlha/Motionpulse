@@ -17,8 +17,10 @@ import kotlinx.coroutines.launch
  */
 class HabitsViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val db = AppDatabase.getInstance(application)
     private val repository: HabitRepository = HabitRepository(
-        AppDatabase.getInstance(application).habitDao()
+        db.habitDao(),
+        db.habitCompletionDao()
     )
 
     val habits: StateFlow<List<HabitEntity>> = repository.observeHabits()

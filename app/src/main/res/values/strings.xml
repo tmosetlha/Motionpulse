@@ -43,4 +43,9 @@
     <string name="confirm_delete_habit">Delete this habit? This can\'t be undone.</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="label_done_today">Done Today</string>
+    <string name="label_current_streak">Current Streak</string>
+    <string name="label_total_completed">Total Completed</string>
+    <string name="label_this_week">This week</string>
+    <string name="label_stats_this_week">Stats this week</string>
 </resources>

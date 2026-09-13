@@ -5,10 +5,15 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [HabitEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [HabitEntity::class, HabitCompletionEntity::class],
+    version = 2,
+    exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun habitDao(): HabitDao
+    abstract fun habitCompletionDao(): HabitCompletionDao
 
     companion object {
         @Volatile
@@ -20,7 +25,12 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "motionpulse.db"
-                ).build()
+                )
+                    // No real user data exists yet at this stage of development,
+                    // so a destructive migration (wipe + recreate) is safe and
+                    // avoids hand-writing a Migration class for a pre-release app.
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
                 INSTANCE = instance
                 instance
             }
