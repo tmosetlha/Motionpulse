@@ -115,9 +115,7 @@ class LoginFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
-                val result = withTimeout(8000L) {
-                    credentialManager.getCredential(requireActivity(), request)
-                }
+                val result = credentialManager.getCredential(requireActivity(), request)
                 val credential = result.credential
 
                 if (credential is CustomCredential &&
@@ -135,12 +133,7 @@ class LoginFragment : Fragment() {
                 } else {
                     showError("Unexpected credential type from Google")
                 }
-            } catch (e: TimeoutCancellationException) {
-                showError("Google Sign-In timed out. This usually means this device/emulator doesn't have Google Play Services or the Play Store app available.")
             } catch (e: GetCredentialException) {
-                // Surface the exact exception type (e.g. NoCredentialException usually
-                // means no Google account on device, or Play Services/Play Store missing
-                // on the emulator) so real failures are diagnosable instead of generic.
                 showError("Google sign-in failed [${e.javaClass.simpleName}]: ${e.message}")
             } catch (e: Exception) {
                 showError("Google sign-in error [${e.javaClass.simpleName}]: ${e.message}")
