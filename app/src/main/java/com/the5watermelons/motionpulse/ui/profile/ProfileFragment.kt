@@ -1,13 +1,18 @@
 package com.the5watermelons.motionpulse.ui.profile
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.data.local.HabitEntity
+import com.the5watermelons.motionpulse.data.notifications.ReminderScheduler
 import com.the5watermelons.motionpulse.databinding.FragmentProfileBinding
 import com.the5watermelons.motionpulse.databinding.ItemAchievementRowBinding
 import com.the5watermelons.motionpulse.util.MessageUtils
@@ -34,6 +40,18 @@ class ProfileFragment : Fragment() {
         requireContext().getSharedPreferences("motionpulse_prefs", Context.MODE_PRIVATE)
     }
 
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            ReminderScheduler.enable(requireContext())
+            prefs.edit().putBoolean("reminders_enabled", true).apply()
+        } else {
+            binding.switchReminder.isChecked = false
+            MessageUtils.showError(requireActivity(), "Notifications permission is needed for reminders")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -48,7 +66,12 @@ class ProfileFragment : Fragment() {
 
         binding.switchReminder.isChecked = prefs.getBoolean("reminders_enabled", true)
         binding.switchReminder.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean("reminders_enabled", isChecked).apply()
+            if (isChecked) {
+                enableReminders()
+            } else {
+                ReminderScheduler.disable(requireContext())
+                prefs.edit().putBoolean("reminders_enabled", false).apply()
+            }
         }
 
         binding.rowManageProfile.setOnClickListener { showManageProfileDialog() }
@@ -198,6 +221,20 @@ class ProfileFragment : Fragment() {
         "yahoo.com" -> "Yahoo"
         "firebase" -> "" // internal, not a real linked provider -- filtered out
         else -> providerId
+    }
+
+    // ---------- Reminders ----------
+
+    private fun enableReminders() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            return
+        }
+        ReminderScheduler.enable(requireContext())
+        prefs.edit().putBoolean("reminders_enabled", true).apply()
     }
 
     // ---------- Helpers ----------
