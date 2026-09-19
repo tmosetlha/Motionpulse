@@ -12,179 +12,258 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvHeader"
+        <!-- Header Banner -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/gradient_header"
-            android:padding="20dp"
-            android:text="@string/nav_stats"
-            android:textColor="@color/mp_text_primary"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:paddingHorizontal="20dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Stat cards: 2x2 grid -->
-        <LinearLayout
-            android:id="@+id/rowStatsTop"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfilePicStats"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="#40000000"
+                android:padding="12dp"
+                android:src="@drawable/ic_launcher_foreground"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                app:tint="@color/mp_text_primary" />
+
+            <TextView
+                android:id="@+id/tvInitialsStats"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:text="MP"
+                android:textColor="@color/mp_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@id/ivProfilePicStats"
+                app:layout_constraintTop_toTopOf="@id/ivProfilePicStats"
+                app:layout_constraintBottom_toBottomOf="@id/ivProfilePicStats"
+                app:layout_constraintEnd_toEndOf="@id/ivProfilePicStats" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivProfilePicStats"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name_wordmark"
+                    android:textColor="#E0FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Your rhythm this week"
+                    android:textColor="@color/mp_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Card 1: Mood & Habits Side by Side -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardMoodHabits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/mp_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toBottomOf="@id/headerBanner">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mood &amp; habits, side by side"
+                    android:textColor="@color/mp_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Mon – Sun"
+                    android:textColor="@color/mp_text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- Custom Line Chart View -->
+                <com.the5watermelons.motionpulse.ui.stats.WeeklyLineChartView
+                    android:id="@+id/weeklyLineChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginTop="16dp" />
+
+                <!-- Weekly Dots Matrix Container -->
+                <LinearLayout
+                    android:id="@+id/weeklyDotsMatrixContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="7" />
+
+                <!-- Legend Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/circle_dot"
+                        android:backgroundTint="@color/mp_blue" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Mood"
+                        android:textColor="@color/mp_text_secondary"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/circle_dot"
+                        android:backgroundTint="@color/mp_pink" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Habit done"
+                        android:textColor="@color/mp_text_secondary"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Card 2: Insights Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardInsights"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="14dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tvHeader">
+            app:cardBackgroundColor="@color/mp_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintTop_toBottomOf="@id/cardMoodHabits">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/stat_card_background"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="20dp">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/habit_row_background"
+                    android:backgroundTint="#2A1635">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="💡"
+                        android:textSize="20sp" />
+                </FrameLayout>
 
                 <TextView
-                    android:id="@+id/tvDoneToday"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvInsightsText"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/mp_pink"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="2/3" />
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:text="Your mood peaks on days you Read a Book. Sundays average your lowest rhythm — maybe ease into the week instead of starting cold."
+                    android:textColor="@color/mp_text_primary"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_done_today"
-                    android:textColor="@color/mp_text_secondary"
-                    android:textSize="11sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/stat_card_background"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
+        </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvCurrentStreak"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mp_pink"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="9d" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_current_streak"
-                    android:textColor="@color/mp_text_secondary"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/rowStatsBottom"
+        <!-- Card 3: Best Day Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardBestDay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
-            android:layout_marginEnd="14dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/rowStatsTop">
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            app:cardBackgroundColor="@color/mp_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardInsights">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/stat_card_background"
-                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvTotalCompleted"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mp_pink"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="47" />
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_total_completed"
+                    android:text="Best day"
+                    android:textColor="@color/mp_text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvBestDayContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Sunday · Energized · 3/3 habits done"
                     android:textColor="@color/mp_text_secondary"
-                    android:textSize="11sp" />
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:layout_weight="1"
-                android:background="@drawable/stat_card_background"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/tvWeekPercent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/mp_pink"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="92%" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_this_week"
-                    android:textColor="@color/mp_text_secondary"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvStatsWeekLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/label_stats_this_week"
-            android:textColor="@color/mp_text_primary"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rowStatsBottom" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvWeeklyStats"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStatsWeekLabel"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_stat_habit_row" />
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,7 +11,12 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -31,6 +36,27 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
+
+    private val googleSignInLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val data = result.data
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        try {
+            val account = task.getResult(ApiException::class.java)!!
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(requireActivity()) { authTask ->
+                    if (authTask.isSuccessful) {
+                        onLoginSuccess()
+                    } else {
+                        showError(authTask.exception?.message ?: "Google authentication failed")
+                    }
+                }
+        } catch (e: Exception) {
+            showError("Google sign-in canceled or failed: ${e.message}")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,51 +119,21 @@ class LoginFragment : Fragment() {
             }
     }
 
-    // ---------- Google (Credential Manager) ----------
+    // ---------- Google Sign-In (Time-Tested Bulletproof Client) ----------
 
     private fun signInWithGoogle() {
-        // Immediate feedback so tapping the button is never silent -- if this toast
-        // doesn't appear, the tap itself isn't registering (a UI/click-wiring issue).
-        // If it appears but nothing follows, the hang is inside Credential Manager
-        // itself (almost always missing Play Services / no Play Store on this device).
         android.widget.Toast.makeText(requireContext(), "Opening Google Sign-In...", android.widget.Toast.LENGTH_SHORT).show()
 
-        val credentialManager = CredentialManager.create(requireContext())
-
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(getString(R.string.default_web_client_id))
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
             .build()
 
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(googleIdOption)
-            .build()
-
-        lifecycleScope.launch {
-            try {
-                val result = credentialManager.getCredential(requireActivity(), request)
-                val credential = result.credential
-
-                if (credential is CustomCredential &&
-                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                ) {
-                    val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                    val firebaseCredential = GoogleAuthProvider.getCredential(
-                        googleIdTokenCredential.idToken, null
-                    )
-                    auth.signInWithCredential(firebaseCredential)
-                        .addOnCompleteListener(requireActivity()) { task ->
-                            if (task.isSuccessful) onLoginSuccess()
-                            else showError(task.exception?.message ?: "Google sign-in failed")
-                        }
-                } else {
-                    showError("Unexpected credential type from Google")
-                }
-            } catch (e: GetCredentialException) {
-                showError("Google sign-in failed [${e.javaClass.simpleName}]: ${e.message}")
-            } catch (e: Exception) {
-                showError("Google sign-in error [${e.javaClass.simpleName}]: ${e.message}")
-            }
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        // Clear previous accounts state to force account chooser dialog on click
+        googleSignInClient.signOut().addOnCompleteListener {
+            val signInIntent = googleSignInClient.signInIntent
+            googleSignInLauncher.launch(signInIntent)
         }
     }
 

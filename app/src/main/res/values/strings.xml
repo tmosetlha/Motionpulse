@@ -61,4 +61,6 @@
     <string name="hint_new_password">New password</string>
     <string name="btn_save">Save</string>
     <string name="btn_ok">OK</string>
+    <string name="label_copy_device_token">Copy Device Token</string>
+    <string name="btn_copy">Copy</string>
 </resources>

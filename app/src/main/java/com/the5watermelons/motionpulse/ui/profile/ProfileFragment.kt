@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.data.local.HabitEntity
@@ -77,6 +78,7 @@ class ProfileFragment : Fragment() {
         binding.rowManageProfile.setOnClickListener { showManageProfileDialog() }
         binding.rowChangePassword.setOnClickListener { showChangePasswordDialog() }
         binding.rowLinkedAccounts.setOnClickListener { showLinkedAccountsDialog() }
+        binding.rowCopyToken.setOnClickListener { showDeviceTokenDialog() }
 
         binding.btnLogOut.setOnClickListener {
             auth.signOut()
@@ -235,6 +237,33 @@ class ProfileFragment : Fragment() {
         }
         ReminderScheduler.enable(requireContext())
         prefs.edit().putBoolean("reminders_enabled", true).apply()
+    }
+
+    // ---------- Device token (for testing FCM pushes without USB/Logcat) ----------
+
+    private fun showDeviceTokenDialog() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!isAdded) return@addOnCompleteListener
+
+            if (!task.isSuccessful) {
+                MessageUtils.showError(requireActivity(), "Couldn't get device token: ${task.exception?.message}")
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+
+            AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.label_copy_device_token))
+                .setMessage(token)
+                .setPositiveButton(getString(R.string.btn_copy)) { _, _ ->
+                    val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                    val clip = android.content.ClipData.newPlainText("FCM Token", token)
+                    clipboard.setPrimaryClip(clip)
+                    MessageUtils.showSuccess(requireActivity(), "Token copied")
+                }
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .show()
+        }
     }
 
     // ---------- Helpers ----------
