@@ -41,6 +41,12 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     private val _summary = MutableStateFlow(StatsSummary())
     val summary: StateFlow<StatsSummary> = _summary
 
+    // --- MOOD FLOW ---
+    // Represents the "Outcome" of your Mood Logs. 
+    // Score mapping: Drained (0.2), Low (0.4), Steady (0.6), Good (0.8), Energized (1.0)
+    private val _moodScores = MutableStateFlow<List<Float>>(listOf(0.6f, 0.4f, 0.7f, 0.3f, 0.6f, 0.2f, 0.8f))
+    val moodScores: StateFlow<List<Float>> = _moodScores
+
     init {
         viewModelScope.launch {
             habits.collectLatest { list -> refresh(list) }
@@ -90,5 +96,27 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
             totalCompleted = totalCompletedAllTime,
             weekPercent = weekPercent
         )
+    }
+
+    /**
+     * Updates the mood score for today in the view state.
+     * This is the bridge between your "Log Mood" button and the Stats Chart.
+     */
+    fun updateTodayMoodScore(moodLevel: String) {
+        val score = when (moodLevel) {
+            "Energized" -> 1.0f
+            "Good" -> 0.8f
+            "Steady" -> 0.6f
+            "Low" -> 0.4f
+            "Drained" -> 0.2f
+            else -> 0.6f
+        }
+        
+        val currentScores = _moodScores.value.toMutableList()
+        // Update the last item (today)
+        if (currentScores.isNotEmpty()) {
+            currentScores[currentScores.size - 1] = score
+            _moodScores.value = currentScores
+        }
     }
 }

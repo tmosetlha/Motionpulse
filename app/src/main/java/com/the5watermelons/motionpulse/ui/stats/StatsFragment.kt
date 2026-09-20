@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.the5watermelons.motionpulse.R
@@ -22,7 +22,7 @@ class StatsFragment : Fragment() {
     private var _binding: FragmentStatsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StatsViewModel by viewModels()
+    private val viewModel: StatsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,19 +43,12 @@ class StatsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.weeklyData.collectLatest { weekly ->
                 populateDotsMatrix(weekly)
+            }
+        }
 
-                // Dynamically feed line chart with mock/calculated rhythm values to keep it alive
-                val chartPoints = if (weekly.isNotEmpty()) {
-                    // Generate subtle variations based on real daily completion ratios
-                    (0 until 7).map { day ->
-                        val total = weekly.size
-                        val done = weekly.count { it.weekDots.getOrElse(day) { false } }
-                        if (total == 0) 0.5f else 0.3f + (done.toFloat() / total.toFloat()) * 0.5f
-                    }
-                } else {
-                    listOf(0.6f, 0.4f, 0.7f, 0.3f, 0.6f, 0.2f, 0.8f)
-                }
-                binding.weeklyLineChart.setDataPoints(chartPoints)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.moodScores.collectLatest { scores ->
+                binding.weeklyLineChart.setDataPoints(scores)
             }
         }
 

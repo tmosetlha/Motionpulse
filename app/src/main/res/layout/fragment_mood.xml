@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mp_background"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Header -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/headerBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_header"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="48dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfilePic"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="#40000000"
+                android:padding="8dp"
+                android:src="@drawable/ic_nav_profile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                app:tint="@color/mp_text_primary" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ivProfilePic"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name_wordmark"
+                    android:textColor="#E0FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="How\'s your rhythm today?"
+                    android:textColor="@color/mp_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Mood Gauge Selector -->
+        <LinearLayout
+            android:id="@+id/moodBarsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal"
+            android:gravity="bottom"
+            android:weightSum="5"
+            app:layout_constraintTop_toBottomOf="@id/headerBanner" />
+
+        <!-- Labels for Gauge -->
+        <LinearLayout
+            android:id="@+id/moodLabelsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            app:layout_constraintTop_toBottomOf="@id/moodBarsContainer">
+
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Drained" android:textColor="@color/mp_text_secondary" android:textSize="11sp" android:gravity="center" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Low" android:textColor="@color/mp_text_secondary" android:textSize="11sp" android:gravity="center" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Steady" android:textColor="@color/mp_text_secondary" android:textSize="11sp" android:gravity="center" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Good" android:textColor="@color/mp_text_secondary" android:textSize="11sp" android:gravity="center" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Energized" android:textColor="@color/mp_text_secondary" android:textSize="11sp" android:gravity="center" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvActiveMoodTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Steady"
+            android:textColor="@color/mp_purple"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/moodLabelsContainer" />
+
+        <TextView
+            android:id="@+id/tvBeatPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Tap a beat to log how you feel right now"
+            android:textColor="@color/mp_text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvActiveMoodTitle" />
+
+        <!-- Factors / Shaping Section -->
+        <TextView
+            android:id="@+id/tvShapingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:text="What\'s shaping it?"
+            android:textColor="@color/mp_text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBeatPrompt" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/shapingChipGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tvShapingLabel">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSleep"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sleep"
+                android:textColor="@color/mp_text_primary"
+                app:chipBackgroundColor="@color/mp_surface" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWork"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Work"
+                android:textColor="@color/mp_text_primary"
+                app:chipBackgroundColor="@color/mp_surface" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHealth"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Health"
+                android:textColor="@color/mp_text_primary"
+                app:chipBackgroundColor="@color/mp_surface" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSocial"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Social"
+                android:textColor="@color/mp_text_primary"
+                app:chipBackgroundColor="@color/mp_surface" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWeather"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weather"
+                android:textColor="@color/mp_text_primary"
+                app:chipBackgroundColor="@color/mp_surface" />
+        </com.google.android.material.chip.ChipGroup>
+
+        <EditText
+            android:id="@+id/etMoodNote"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/input_field_background"
+            android:hint="Add a note — optional"
+            android:minHeight="52dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/mp_text_primary"
+            android:textColorHint="@color/mp_text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shapingChipGroup" />
+
+        <android.widget.Button
+            android:id="@+id/btnLogMood"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/gradient_button"
+            android:text="Log mood"
+            android:textAllCaps="false"
+            android:textColor="@color/mp_text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etMoodNote" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardMoodStreak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            app:cardBackgroundColor="@color/mp_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnLogMood">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:progress="85"
+                    app:indicatorColor="@color/mp_pink"
+                    app:indicatorSize="48dp"
+                    app:trackColor="#1AFFFFFF"
+                    app:trackThickness="4dp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mood streak"
+                        android:textColor="@color/mp_text_secondary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="6 days logged"
+                        android:textColor="@color/mp_text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

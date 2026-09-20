@@ -68,6 +68,7 @@ dependencies {
     // Retrofit (REST API calls)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.4")

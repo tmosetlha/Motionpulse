@@ -28,6 +28,12 @@
         tools:layout="@layout/fragment_add_habit" />
 
     <fragment
+        android:id="@+id/moodFragment"
+        android:name="com.the5watermelons.motionpulse.ui.mood.MoodFragment"
+        android:label="Mood"
+        tools:layout="@layout/fragment_mood" />
+
+    <fragment
         android:id="@+id/statsFragment"
         android:name="com.the5watermelons.motionpulse.ui.stats.StatsFragment"
         android:label="Stats"

@@ -9,6 +9,10 @@
         android:icon="@drawable/ic_nav_habits"
         android:title="@string/nav_habits" />
     <item
+        android:id="@+id/moodFragment"
+        android:icon="@drawable/ic_nav_mood"
+        android:title="Mood" />
+    <item
         android:id="@+id/statsFragment"
         android:icon="@drawable/ic_nav_stats"
         android:title="@string/nav_stats" />
