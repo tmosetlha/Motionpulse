@@ -13,6 +13,10 @@
         android:icon="@drawable/ic_nav_mood"
         android:title="Mood" />
     <item
+        android:id="@+id/statsFragment"
+        android:icon="@drawable/ic_nav_stats"
+        android:title="Stats" />
+    <item
         android:id="@+id/communityFragment"
         android:icon="@drawable/ic_nav_community"
         android:title="Community" />

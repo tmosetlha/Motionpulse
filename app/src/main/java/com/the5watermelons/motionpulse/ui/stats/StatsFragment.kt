@@ -11,6 +11,7 @@ import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.databinding.FragmentStatsBinding
@@ -39,6 +40,10 @@ class StatsFragment : Fragment() {
         val firstName = displayName?.split(" ")?.firstOrNull()?.takeIf { it.isNotBlank() } ?: "User"
         val initials = if (firstName.isNotEmpty()) firstName.take(2).uppercase() else "MP"
         binding.tvInitialsStats.text = initials
+
+        binding.btnLogMoodStats.setOnClickListener {
+            findNavController().navigate(R.id.moodFragment)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.weeklyData.collectLatest { weekly ->

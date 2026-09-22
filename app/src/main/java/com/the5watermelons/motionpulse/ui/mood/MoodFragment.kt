@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.the5watermelons.motionpulse.R
@@ -159,6 +160,9 @@ class MoodFragment : Fragment() {
                 // Success feedback after server confirmation
                 MessageUtils.showSuccess(requireActivity(), "Rhythm synced & saved!")
                 binding.etMoodNote.text?.clear()
+
+                // Navigate directly to Stats so user can see their rhythm chart update
+                findNavController().navigate(R.id.statsFragment)
             } catch (e: Exception) {
                 // Network error feedback
                 MessageUtils.showError(requireActivity(), "Sync failed: ${e.localizedMessage}")

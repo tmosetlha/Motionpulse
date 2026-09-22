@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.data.local.HabitEntity
@@ -55,6 +56,10 @@ class HomeFragment : Fragment() {
         } else {
             binding.ivProfilePic.visibility = View.VISIBLE
             binding.tvInitials.visibility = View.GONE
+        }
+
+        binding.chipSteady.setOnClickListener {
+            findNavController().navigate(R.id.moodFragment)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
