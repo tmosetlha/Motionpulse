@@ -34,6 +34,12 @@
         tools:layout="@layout/fragment_mood" />
 
     <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.the5watermelons.motionpulse.ui.community.CommunityFragment"
+        android:label="Community"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
         android:id="@+id/statsFragment"
         android:name="com.the5watermelons.motionpulse.ui.stats.StatsFragment"
         android:label="Stats"

@@ -3,6 +3,9 @@ package com.the5watermelons.motionpulse.ui.stats
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.the5watermelons.motionpulse.data.local.AppDatabase
 import com.the5watermelons.motionpulse.data.local.HabitEntity
 import com.the5watermelons.motionpulse.data.repository.HabitRepository
@@ -50,6 +53,59 @@ class StatsViewModel(application: Application) : AndroidViewModel(application) {
     init {
         viewModelScope.launch {
             habits.collectLatest { list -> refresh(list) }
+        }
+        fetchMoodHistory()
+    }
+
+    private fun fetchMoodHistory() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+        
+        // Get timestamp for 7 days ago
+        val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
+        
+        firestore.collection("mood_logs")
+            .whereEqualTo("userId", userId)
+            .whereGreaterThanOrEqualTo("timestamp", sevenDaysAgo)
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, _ ->
+                if (snapshot != null) {
+                    processFirestoreMoods(snapshot.documents.map { it.data ?: emptyMap() })
+                }
+            }
+    }
+
+    private fun processFirestoreMoods(logs: List<Map<String, Any>>) {
+        val weekDates = currentWeekDates()
+        val dayScores = mutableMapOf<String, Float>()
+        
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        
+        logs.forEach { log ->
+            val timestamp = log["timestamp"] as? Long ?: return@forEach
+            val moodLevel = log["moodLevel"] as? String ?: return@forEach
+            val dateStr = sdf.format(java.util.Date(timestamp))
+            
+            val score = mapMoodToScore(moodLevel)
+            // If multiple logs per day, take the latest one
+            dayScores[dateStr] = score
+        }
+        
+        val finalScores = weekDates.map { date ->
+            dayScores[date] ?: 0.5f // Default to neutral if no log for that day
+        }
+        
+        _moodScores.value = finalScores
+    }
+
+    private fun mapMoodToScore(moodLevel: String): Float {
+        return when (moodLevel) {
+            "Energized" -> 1.0f
+            "Good" -> 0.8f
+            "Steady" -> 0.6f
+            "Low" -> 0.4f
+            "Drained" -> 0.2f
+            else -> 0.6f
         }
     }
 

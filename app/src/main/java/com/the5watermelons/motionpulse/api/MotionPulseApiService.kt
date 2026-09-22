@@ -11,19 +11,23 @@ import retrofit2.http.Query
 
 interface MotionPulseApiService {
 
-    // Using real public test endpoint: jsonplaceholder.typicode.com/posts
-    // This allows us to perform a real REST POST request and get a real status code back.
+    // Using real public test endpoint: jsonplaceholder.typicode.com
     @POST("posts")
     suspend fun logMood(@Body payload: MoodLogPayload)
 
     @GET("posts/1")
     suspend fun getMoodStreak(@Query("userId") userId: String): MoodStreakResponse
 
+    @GET("posts")
+    suspend fun getCommunityFeed(@Query("userId") userId: String): List<SocialFeedItem>
+
+    @POST("posts")
+    suspend fun sendChallengeInvite(@Body invite: ChallengeInvite)
+
     companion object {
         private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
         fun create(): MotionPulseApiService {
-            // Add real-time network logging so you can see the data flow in Logcat
             val logger = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }

@@ -13,9 +13,9 @@
         android:icon="@drawable/ic_nav_mood"
         android:title="Mood" />
     <item
-        android:id="@+id/statsFragment"
-        android:icon="@drawable/ic_nav_stats"
-        android:title="@string/nav_stats" />
+        android:id="@+id/communityFragment"
+        android:icon="@drawable/ic_nav_community"
+        android:title="Community" />
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_nav_profile"

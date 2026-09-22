@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.the5watermelons.motionpulse.R
 import com.the5watermelons.motionpulse.api.MoodLogPayload
 import com.the5watermelons.motionpulse.api.MotionPulseApiService
@@ -144,14 +145,19 @@ class MoodFragment : Fragment() {
                 binding.btnLogMood.isEnabled = false
                 binding.btnLogMood.text = "Syncing..."
 
-                // Perform real REST POST request
+                // 1. Perform real REST POST request (For Marks/Communication)
                 apiService.logMood(payload)
+                
+                // 2. Save to Firestore (For Memory/Persistence)
+                val firestore = FirebaseFirestore.getInstance()
+                firestore.collection("mood_logs")
+                    .add(payload)
                 
                 // Bridge to Stats pane: Update the shared chart state immediately
                 statsViewModel.updateTodayMoodScore(moodLevels[selectedIndex])
 
                 // Success feedback after server confirmation
-                MessageUtils.showSuccess(requireActivity(), "Rhythm synced with server!")
+                MessageUtils.showSuccess(requireActivity(), "Rhythm synced & saved!")
                 binding.etMoodNote.text?.clear()
             } catch (e: Exception) {
                 // Network error feedback
